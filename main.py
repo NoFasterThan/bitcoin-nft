@@ -12,7 +12,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 from extension import proxies
 from selenium_tools.twitter import login_twitter, twitter_follow, twitter_retweet_with_url
-
+from failed import twitter_failed
 logging.basicConfig(filename="logging.log", level=logging.INFO)
 ANTICAPTCHA = 'anticaptcha.crx'
 METAMASK = 'metamask10.14.crx'
@@ -44,9 +44,11 @@ tweet_cookie = tweets.iloc[:, 4].tolist()
 discord_token = discords.iloc[:, 0].tolist()
 discord_token_parse = list(map(lambda x: x.replace("\n", ""), discord_token))
 
+sub_set = [x for x in range(len(tweet_id)) if x not in twitter_failed]
+
 if __name__ == '__main__':
     failed = []
-    for num_idx in range(7, len(tweet_id)):
+    for num_idx in sub_set:
 
         start = time.time()
         try:
@@ -69,8 +71,8 @@ if __name__ == '__main__':
             options.add_experimental_option('excludeSwitches', ['enable-logging'])
             # options.add_argument("--disable-blink-features=AutomationControlled")
             # options.add_experimental_option('useAutomationExtension', False)
-            options.add_extension(ANTICAPTCHA)
-            options.add_extension(METAMASK)
+            # options.add_extension(ANTICAPTCHA)
+            # options.add_extension(METAMASK)
 
             # proxies_extension = proxies("user-jo1234-sessionduration-1", "uosai2021", "us.smartproxy.com", "10001")
             ip = proxy_hai[num_idx].split(":")[0]
