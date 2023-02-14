@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "selenium-dragons"
+version = "0.1.0"
+description = ""
+authors = ["SangMinLeeAI <sangmin.lee.ai@gmail.com>"]
+readme = "README.md"
+packages = [{include = "selenium_dragons"}]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+selenium = "^4.8.0"
+utils = "^1.0.1"
+pyclip = "^0.7.0"
+webdriver-manager = "^3.8.5"
+numpy = "^1.24.1"
+pyautogui = "^0.9.53"
+pytz = "^2022.7.1"
+python-dateutil = "^2.8.2"
+pandas = "^1.5.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
