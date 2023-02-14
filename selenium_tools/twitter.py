@@ -190,13 +190,13 @@ def disconnect_twitter(browser, login_completed=True, username=None, password=No
         logging.info("twitter disconnect failed")
 
 
-def twitter_retweet_with_url(browser, url, retweet_name, login_completed=True, username=None, password=None,
+def twitter_retweet_with_url(url, tab_name, browser, login_completed=True, username=None, password=None,
                              phone_number=None, cookie=None, tweet_contents=None):
     logging.info("twitter_retweet_with_url start")
     if not login_completed:
         login_twitter(browser, username, password, phone_number, cookie)
     new_tab(
-        retweet_name,
+        tab_name,
         url,
         browser
     )
