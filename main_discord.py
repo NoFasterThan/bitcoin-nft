@@ -77,7 +77,7 @@ if __name__ == '__main__':
             # proxies_extension = proxies("user-jo1234-sessionduration-1", "uosai2021", "us.smartproxy.com", "10001")
             ip = proxy_hai[num_idx].split(":")[0]
             port = proxy_hai[num_idx].split(":")[1]
-            proxies_extension = proxies("jo123", "Pwjustforhack4$", ip, port)
+            proxies_extension = proxies("jo123", "Pwjustforhack5$", ip, port)
             options.add_extension(proxies_extension)
             # options.add_argument("--headless=new")
             driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()),
