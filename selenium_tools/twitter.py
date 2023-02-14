@@ -31,12 +31,7 @@ def login_twitter(browser, username, password, phone_number, cookie, new_browser
                 continue
 
             browser.add_cookie(cookie)
-        ##captcha key injection
-        acp_api_send_request(
-            browser,
-            'setOptions',
-            {'options': {'antiCaptchaApiKey': 'c48e6a0ade358666ec236e8b27244e58'}}
-        )
+
         logging.info("twitter login start")
         username_field = WebDriverWait(browser, 18).until(
             EC.element_to_be_clickable((By.XPATH, '//input[@autocomplete="username"]')))
