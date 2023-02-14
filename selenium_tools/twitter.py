@@ -1,7 +1,5 @@
 import base64
-import logging
 import random
-from lib2to3.pgen2 import driver
 
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.keys import Keys
@@ -94,12 +92,10 @@ def login_twitter(browser, username, password, phone_number, cookie, new_browser
         clickable('/html/body', browser)
         if len(alert_button := browser.find_elements(By.XPATH,
                                                      '/html/body/div[1]/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div/div/div[2]/div[1]/div')):
-
             alert_button[0].send_keys(Keys.ENTER)
 
         if len(my_num := browser.find_elements(By.XPATH,
                                                "/html/body/div[1]/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div/div/div[2]/div[1]")):
-
             my_num[0].send_keys(Keys.ENTER)
 
         if len(review_your_phone := browser.find_elements(By.XPATH,
@@ -110,23 +106,11 @@ def login_twitter(browser, username, password, phone_number, cookie, new_browser
 
         logging.info("twitter login completed")
 
-        logging.info("twitter follow start")
+        cookie = browser.get_cookies()
 
-        twitter_follow(
-            "@notablesart",
-            browser
-        )
-        #홈버튼
-        clickable(
-            "/html/body/div[1]/div/div/div[2]/header/div/div/div/div[1]/div[2]/nav/a[1]",
-            browser
-        )
+        with open('twitter_cookie.json', 'w') as f:
+            json.dump({"id": username, "cookie": cookie}, f)
 
-        twitter_follow(
-            "@0xDith",
-            browser
-        )
-        logging.info("twitter follow completed")
 
     except Exception as e:
         logging.info("twitter login failed")
@@ -134,7 +118,8 @@ def login_twitter(browser, username, password, phone_number, cookie, new_browser
         print("예외가 발생했습니다.", str(e))
 
 
-def twitter_follow(twitter_id ,browser):
+def twitter_follow(twitter_id, browser, sequenced=False):
+    logging.info(f"twitter follow {twitter_id}")
     ##검색창에 검색
     sendable(
         "/html/body/div[1]/div/div/div[2]/main/div/div/div/div[2]/div/div[2]/div/div/div/div[1]/div/div/div/form/div[1]/div/div/div/label/div[2]/div/input",
@@ -177,6 +162,13 @@ def twitter_follow(twitter_id ,browser):
     time.sleep(random.randint(1, 2) + random.random())
     logging.info(f"twitter {twitter_id} follow completed")
 
+    if sequenced:
+        # 홈버튼
+        clickable(
+            "/html/body/div[1]/div/div/div[2]/header/div/div/div/div[1]/div[2]/nav/a[1]",
+            browser
+        )
+
 
 def disconnect_twitter(browser, login_completed=True, username=None, password=None, phone_number=None, cookie=None):
     logging.info("twitter disconnecting")
@@ -202,7 +194,9 @@ def disconnect_twitter(browser, login_completed=True, username=None, password=No
     else:
         logging.info("twitter disconnect failed")
 
-def twitter_retweet_with_url(browser, url, retweet_name, login_completed=True, username=None, password=None, phone_number=None, cookie=None, tweet_contents = None):
+
+def twitter_retweet_with_url(browser, url, retweet_name, login_completed=True, username=None, password=None,
+                             phone_number=None, cookie=None, tweet_contents=None):
     logging.info("twitter_retweet_with_url start")
     if not login_completed:
         login_twitter(browser, username, password, phone_number, cookie)
@@ -234,5 +228,3 @@ def twitter_retweet_with_url(browser, url, retweet_name, login_completed=True, u
         "//*[text()='Reply']",
         browser
     )
-
-
