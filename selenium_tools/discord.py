@@ -1,10 +1,13 @@
 import logging
+import random
 import time
 from lib2to3.pgen2 import driver
-from common_tools import clickable, new_tab
+
+from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
-import random
+
 import common_tools
+from common_tools import clickable, new_tab, textable
 
 
 def login_discord(token, browser, new_browser=False):
@@ -33,7 +36,7 @@ def login_discord(token, browser, new_browser=False):
     time.sleep(2)
 
 
-def invite_discord(browser, invite_code, new_browser=False):
+def invite_discord(invite_code, browser, new_browser=False):
     if new_browser:
         browser.get(f"https://discord.com/invite/{invite_code}")
     else:
@@ -56,6 +59,7 @@ def invite_discord(browser, invite_code, new_browser=False):
 
     logging.info("discord invite complete")
     time.sleep(2)
+
 
 def disconnect_discord(browser, login_completed=True, token=None):
     logging.info("disconnecting discord")
@@ -80,3 +84,39 @@ def disconnect_discord(browser, login_completed=True, token=None):
         browser
     )
     logging.info("discord disconnect completed")
+
+def notables_discord(browser):
+    logging.info("notables discord start")
+
+    #click start verification
+    clickable(
+        '//*[text()="Start Verification"]',
+        browser
+    )
+    #verification keyword
+    keyword = textable(
+        '//*[contains(text(),"Please select")]',
+        browser
+    )
+
+    keyword = keyword.split(" ")[4].toLower()
+
+    #click option page
+    clickable(
+        '//*[text()="Please select the correct option"]',
+        browser
+    )
+
+    #click option
+    op_action = ActionChains(browser)
+    op_action.move_to_element(
+        option := browser.find_elements(By.XPATH,
+                                        f"//div[contains(@data-list-item-id,'{keyword}')]")[0])
+    op_action.click(option)
+    op_action.perform()
+
+    if len(browser.find_elements(By.XPATH, '//*[text()="Verified Successfully!"]')) >= 1:
+        logging.info("notables discord suceeded")
+
+
+
