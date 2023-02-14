@@ -8,18 +8,14 @@ from lib2to3.pgen2 import driver
 import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 
 from extension import proxies
-from selenium_tools.common_tools import clickable, new_tab, textable
+from selenium_tools.twitter import login_twitter, twitter_follow, twitter_retweet_with_url
 
 logging.basicConfig(filename="logging.log", level=logging.INFO)
 ANTICAPTCHA = 'anticaptcha.crx'
 METAMASK = 'metamask10.14.crx'
-
-
 
 proxy_hai = open("HaiProxy.txt", "r").read().split("\n")
 
@@ -47,6 +43,7 @@ tweet_useragent = tweets.iloc[:, 3].tolist()
 tweet_cookie = tweets.iloc[:, 4].tolist()
 discord_token = discords.iloc[:, 0].tolist()
 discord_token_parse = list(map(lambda x: x.replace("\n", ""), discord_token))
+
 if __name__ == '__main__':
     failed = []
     for num_idx in range(7, len(tweet_id)):
@@ -83,26 +80,36 @@ if __name__ == '__main__':
             # options.add_argument("--headless=new")
             driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()),
                                       options=options)
-            # 메타마스크 셋팅 함수
-            metamask_setting(driver)
-            # #트위터 팔로우
 
+            # twitter login
             login_twitter(driver, tweet_id[1833 - num_idx], tweet_password[1833 - num_idx], tweet_phone[1833 - num_idx],
                           cookie=tweet_cookie[1833 - num_idx])
 
-            # should be excuted after url init
-            # acp_api_send_request(
-            #     driver,
-            #     'setOptions',
-            #     {'options': {'antiCaptchaApiKey': 'c48e6a0ade358666ec236e8b27244e58'}}
-            # )
-            # 드래곤스 등록
-            dragons_register(driver)
+            # twitter follow
+            twitter_follow(
+                "@notablesart",
+                driver,
+                sequenced=True
+            )
+
+            twitter_follow(
+                "@0xDith",
+                driver
+            )
+            twitter_retweet_with_url(
+                "https://twitter.com/0xDith/status/1625154314191659008",
+                "OxDith",
+                driver
+            )
+            twitter_retweet_with_url(
+                "https://twitter.com/notablesart/status/1625185570115797007",
+                "notablesart",
+                driver
+            )
 
             driver.quit()
             logging.warning("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-            logging.warning("success")
-            logging.warning(f",,success")
+            logging.warning("whole process success")
             logging.warning("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
             logging.warning("\n")
         except Exception as e:
@@ -114,6 +121,6 @@ if __name__ == '__main__':
             logging.warning("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
             logging.warning("\n")
         # 종료하고 담 반복문으로
-        print("[%d/%d] Whole process Completed for %.2f" % (num_idx, 600, time.time() - start))
-        logging.info("[%d/%d] Whole process Completed for %.2f" % (num_idx, 600, time.time() - start))
+        print("[%d/%d] Whole process Completed for %.2f" % (num_idx, 1000, time.time() - start))
+        logging.info("[%d/%d] Whole process Completed for %.2f" % (num_idx, 1000, time.time() - start))
     logging.fatal(f"{failed}")
